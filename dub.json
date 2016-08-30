@@ -1,9 +1,9 @@
 {
-	"name": "grids",
+	"name": "dogue",
 	"authors": [
-		""
+		"fxcqz"
 	],
 	"description": "",
 	"copyright": "",
-	"license": ""
+	"license": "MIT"
 }
