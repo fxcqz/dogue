@@ -57,14 +57,14 @@ class Room : BaseLevelObject {
 class Level {
     int width;
     int height;
-    Object[][int] grid;
+    BaseLevelObject[][int] grid;
 
     this(int width, int height) {
         this.width = width;
         this.height = height;
         for(int y = 0; y < height; ++y) {
             for(int x = 0; x < width; ++x){
-                this.grid[y * width + x] = new Object[](0);
+                this.grid[y * width + x] = new BaseLevelObject[](0);
             }
         }
     }
