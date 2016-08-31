@@ -8,9 +8,14 @@ int hashLevelPosition(ref Level level, int x, int y) {
 }
 
 abstract class BaseLevelObject {
+    /*
+       * Base class for all objects present in the level that should exist in
+       * the `world`. E.g. rooms, walls, npcs, etc.
+    */
     public int width, height;
     public int x, y;
-    protected int[] belongsTo;
+    // maps grid position (int) -> bucket position (ulong)
+    protected ulong[int] belongsTo;
 
     this(int x, int y, int width, int height) {
         this.x = x;
@@ -27,7 +32,7 @@ abstract class BaseLevelObject {
                     // skip if it already exists
                     continue;
                 }
-                this.belongsTo ~= pos;
+                this.belongsTo[pos] = level.grid[pos].length;
                 level.grid[pos] ~= this;
             }
         }
@@ -41,10 +46,11 @@ abstract class BaseLevelObject {
         assert(this.belongsTo.length == 0);
     }
     body {
-        foreach(idx; this.belongsTo) {
-            level.grid[idx] = remove(level.grid[idx], countUntil(level.grid[idx], this));
+        foreach(gridPos, bucketPos; this.belongsTo) {
+            level.grid[gridPos] = remove(level.grid[gridPos], bucketPos);
         }
-        this.belongsTo = [];
+        // refresh belongsTo since all references have been removed
+        this.belongsTo = (ulong[int]).init;
     }
 }
 
