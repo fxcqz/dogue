@@ -94,12 +94,12 @@ class Level {
     void displayLevel() {
         // dup grid since sort mutates which would make belongsTo offsets
         // inaccurate
-        auto bucket = this.grid.dup;
         for(int y = 0; y < this.height; ++y) {
             for(int x = 0; x < this.width; ++x) {
                 int pos = y * this.width + x;
-                sort!((a, b) => a.heightIndex > b.heightIndex)(bucket[pos]);
-                write(bucket[pos][0].gridRepr, " ");
+                auto bucket = this.grid[pos].dup;
+                sort!((a, b) => a.heightIndex > b.heightIndex)(bucket);
+                write(bucket[0].gridRepr, " ");
             }
             write("\n");
         }
