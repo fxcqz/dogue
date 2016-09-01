@@ -14,6 +14,6 @@ void main()
     room1.registerObject(level);
     room2.registerObject(level);
     writeln(level.grid);
-    room1.deregisterObject(level);
+    level.displayLevel();
     writeln(level.grid);
 }

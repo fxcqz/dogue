@@ -14,6 +14,10 @@ abstract class BaseLevelObject {
     */
     public int width, height;
     public int x, y;
+    // tracks height of object in the world
+    public int heightIndex() { return 0; }
+    // display char for this object type
+    public char gridRepr() { return ' '; }
     // maps grid position (int) -> bucket position (ulong)
     protected ulong[int] belongsTo;
 
@@ -54,7 +58,19 @@ abstract class BaseLevelObject {
     }
 }
 
+class Floor : BaseLevelObject {
+    override public int heightIndex() { return 1; }
+    override public char gridRepr() { return '.'; }
+
+    this(int x, int y, int width, int height) {
+        super(x, y, width, height);
+    }
+}
+
 class Room : BaseLevelObject {
+    override public int heightIndex() { return 2; }
+    override public char gridRepr() { return '#'; }
+
     this(int x, int y, int width, int height) {
         super(x, y, width, height);
     }
@@ -70,8 +86,22 @@ class Level {
         this.height = height;
         for(int y = 0; y < height; ++y) {
             for(int x = 0; x < width; ++x){
-                this.grid[y * width + x] = new BaseLevelObject[](0);
+                this.grid[y * width + x] = [new Floor(x, y, 1, 1)];
             }
+        }
+    }
+
+    void displayLevel() {
+        // dup grid since sort mutates which would make belongsTo offsets
+        // inaccurate
+        auto bucket = this.grid.dup;
+        for(int y = 0; y < this.height; ++y) {
+            for(int x = 0; x < this.width; ++x) {
+                int pos = y * this.width + x;
+                sort!((a, b) => a.heightIndex > b.heightIndex)(bucket[pos]);
+                write(bucket[pos][0].gridRepr, " ");
+            }
+            write("\n");
         }
     }
 }
